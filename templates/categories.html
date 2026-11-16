@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container categories-section">
+    <h2 class="categories-title">Our Categories</h2>
+    <p class="categories-subtitle">Explore our product categories</p>
+    <form method="GET">
+        <input type="text" name="search" class="category-search" placeholder="Search categories..." value="{{ request.GET.search }}" >
+        <button type="submit" class="category-btn">Search</button>
+    </form>
+    <div class="categories-grid">
+        {% for category in categories %}
+        <div class="category-card">
+            {% if category.image %}
+                <img src="{{ category.image.url }}" class="category-image" alt="{{ category.name }}" >
+            {% else %}
+                <imgsrc="https://placehold.co/400x250?text=Category" class="category-image" alt="Category">
+            {% endif %}
+            <div class="category-info">
+                <h3 class="category-name">{{ category.name }}</h3>
+                <p class="category-description">{{ category.description|default:"Explore our products in this category." }}</p>
+                {% comment %} <a href="{% url 'category_products' category.id %}"class="category-btn">View Products</a> {% endcomment %}
+            </div>
+        </div>
+        {% empty %}
+        <p>No categories found.</p>
+        {% endfor %}
+
+    </div>
+</div>
+
+{% endblock %}

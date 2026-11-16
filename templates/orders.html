@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container orders-section">
+    <h2 class="orders-title">My Orders</h2>
+    <p class="orders-subtitle">Track and manage your orders</p>
+    <div class="orders-table-wrapper">
+        <table class="orders-table">
+            <thead>
+                <tr>
+                    <th>Order ID</th>
+                    <th>Date</th>
+                    <th>Total Price</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td class="order-id"> #{{ order.id }} </td>
+                    <td>{{ order.created_at|date:"d M Y" }}</td>
+                    <td>{{ order.total_price }} TJS</td>
+                    <td>
+                        {% if order.status == 'pending' %}
+                            <span class="order-status status-pending">Pending</span>
+                        {% elif order.status == 'completed' %}
+                            <span class="order-status status-completed">Completed</span>
+                        {% elif order.status == 'cancelled' %}
+                            <span class="order-status status-cancelled">Cancelled</span>
+                        {% else %}
+                            <span class="order-status status-processing">Processing</span>
+                        {% endif %}
+                    </td>
+
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="orders-empty">You have no orders yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}
