@@ -1,38 +1,24 @@
 {% extends 'base.html' %}
-
 {% block content %}
-
 <div class="container">
     <h2>All Categories</h2>
-
     <form method="GET" action="{% url 'categories' %}">
-        <input
-            type="text"
-            name="search"
-            placeholder="Search categories..."
-            value="{{ search|default:'' }}"
-        >
+        <input type="text" name="search" placeholder="Search categories..." value="{{ search|default:'' }}">
         <button type="submit">Search</button>
     </form>
 
-    <div class="categories-container">
+    <div class="caegories-container">
 
         {% for category in categories %}
             <div class="category-card">
-
                 <div class="category-info">
                     <h3>{{ category.name }}</h3>
-
                     <p>{{ category.description }}</p>
 
-                    <a
-                        href="{% url 'show_products' %}?category={{ category.id }}"
-                        class="category-btn"
-                    >
+                    <a href="{% url 'show_products' %}?category={{ category.id }}" class="category-btn" >
                         View Products
                     </a>
                 </div>
-
             </div>
 
         {% empty %}

@@ -16,34 +16,21 @@
     </form>
 
     <div class="product-grid">
-
         {% for product in products %}
-
             <div class="product-card">
-
                 {% if product.photo %}
-                    <img
-                        src="{{ product.photo.url }}"
-                        class="product-image"
-                        alt="{{ product.name }}"
-                    >
+                    <img src="{{ product.photo.url }}" class="product-image" alt="{{ product.name }}" >
                 {% else %}
                     <p>No image available</p>
                 {% endif %}
-
                 <div class="product-info">
                     <h5 class="product-name">{{ product.name }}</h5>
                     <p class="product-price">{{ product.price }} TJS</p>
                 </div>
-
             </div>
-
         {% empty %}
-
             <p>No products found.</p>
-
         {% endfor %}
-
     </div>
 </div>
 {% endblock %}
