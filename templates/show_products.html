@@ -1,11 +1,9 @@
 {% extends 'base.html' %}
-
 {% block content %}
 
 <div class="container">
     <h2>All Products</h2>
 
-    <!-- Search -->
     <form method="GET" action="{% url 'show_products' %}">
         <input
             type="text"
@@ -16,7 +14,6 @@
         <button type="submit">Search</button>
     </form>
 
-    <!-- Products -->
     <div class="products-container">
 
         {% for product in products %}
@@ -49,8 +46,8 @@
                         Category: {{ product.category.name }}
                     </p>
 
-                    <a href="#" class="product-btn">
-                        View Product
+                    <a href="{% url 'get_order' %}" class="product-btn">
+                        Get order
                     </a>
                 </div>
 

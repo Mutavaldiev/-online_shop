@@ -12,13 +12,9 @@
         <div class="category-card">
             {% if category.image %}
                 <img src="{{ category.image.url }}" class="category-image" alt="{{ category.name }}" >
-            {% else %}
-                <imgsrc="https://placehold.co/400x250?text=Category" class="category-image" alt="Category">
-            {% endif %}
             <div class="category-info">
                 <h3 class="category-name">{{ category.name }}</h3>
                 <p class="category-description">{{ category.description|default:"Explore our products in this category." }}</p>
-                {% comment %} <a href="{% url 'category_products' category.id %}"class="category-btn">View Products</a> {% endcomment %}
             </div>
         </div>
         {% empty %}

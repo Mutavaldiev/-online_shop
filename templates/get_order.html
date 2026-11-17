@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">My Orders</h2>
+
+    {% for item in orders %}
+
+    <div class="card mb-3 p-3 shadow-sm">
+
+        <h5>Order #{{ item.id }}</h5>
+
+        <p>
+            <strong>Customer:</strong>
+            {{ item.customer_name }}
+        </p>
+
+        <p>
+            <strong>Count:</strong>
+            {{ item.count }}
+        </p>
+
+        <p>
+            <strong>Products:</strong>
+        </p>
+
+        {% for product in item.product_id.all %}
+            <div class="d-flex align-items-center gap-3 mb-2">
+
+                {% if product.photo %}
+                    <img src="{{ product.photo.url }}"
+                         width="70"
+                         height="70"
+                         style="object-fit: cover; border-radius: 8px;">
+                {% endif %}
+
+                <div>
+                    <strong>{{ product.product_name }}</strong>
+                    <p class="mb-0">{{ product.price }} сомонӣ</p>
+                </div>
+
+            </div>
+        {% empty %}
+            <p>No products found.</p>
+        {% endfor %}
+
+    </div>
+
+    {% endfor %}
+</div>
+{% endblock %}
+

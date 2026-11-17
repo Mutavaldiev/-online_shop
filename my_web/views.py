@@ -172,18 +172,12 @@ def show_products(request):
             Q(name__icontains=search) |
             Q(description__icontains=search)
         )
-
-    return render(request, 'shop/show_product.html', {
-        'products': products,
-        'search': search,
-    })
-
+    return render(request, 'show_products.html', {'products': products,'search': search,})
 
 
 
 def show_categories(request):
     search = request.GET.get('search', '').strip()
-
     categories = category.objects.filter(is_active=True)
 
     if search:
@@ -191,8 +185,19 @@ def show_categories(request):
             Q(name__icontains=search) |
             Q(description__icontains=search)
         )
-
     return render(request, 'categories.html', {
         'categories': categories,
         'search': search,
     })
+
+
+
+
+
+def get_order(request):
+    orders = order.objects.all()
+    return render(request, 'get_order.html', {
+        'orders': orders
+    })
+
+
