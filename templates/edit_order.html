@@ -1,0 +1,59 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Update Order</h2>
+
+    <div class="card p-4">
+        <h3>{{ order.product.name }}</h3>
+
+        {% if order.product.photo %}
+            <img
+                src="{{ order.product.photo.url }}"
+                alt="{{ order.product.name }}"
+                width="180"
+            >
+        {% endif %}
+
+        <p>Product price: {{ order.product.price }} TJS</p>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label>Your Name</label>
+                <input
+                    type="text"
+                    name="customer_name"
+                    value="{{ order.customer_name }}"
+                    required
+                >
+            </div>
+
+            <div class="mb-3">
+                <label>Phone Number</label>
+                <input
+                    type="tel"
+                    name="phone_number"
+                    value="{{ order.phone_number }}"
+                    required
+                >
+            </div>
+
+            <div class="mb-3">
+                <label>Quantity</label>
+                <input
+                    type="number"
+                    name="quantity"
+                    value="{{ order.quantity }}"
+                    min="1"
+                    required
+                >
+            </div>
+
+            <button type="submit">Save Changes</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

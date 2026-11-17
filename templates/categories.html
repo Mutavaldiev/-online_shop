@@ -1,26 +1,24 @@
-{% extends 'base.html' %}
-{% block content %}
-<div class="container categories-section">
-    <h2 class="categories-title">Our Categories</h2>
-    <p class="categories-subtitle">Explore our product categories</p>
-    <form method="GET">
-        <input type="text" name="search" class="category-search" placeholder="Search categories..." value="{{ request.GET.search }}" >
-        <button type="submit" class="category-btn">Search</button>
-    </form>
-    <div class="categories-grid">
-        {% for category in categories %}
-        <div class="category-card">
-            {% if category.image %}
-                <img src="{{ category.image.url }}" class="category-image" alt="{{ category.name }}" >
-            <div class="category-info">
-                <h3 class="category-name">{{ category.name }}</h3>
-                <p class="category-description">{{ category.description|default:"Explore our products in this category." }}</p>
-            </div>
-        </div>
-        {% empty %}
-        <p>No categories found.</p>
-        {% endfor %}
 
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <h2>Categories</h2>
+
+    <div class="categories">
+        {% for category in categories %}
+            <div class="category-card">
+                <h3>{{ category.name }}</h3>
+                <p>{{ category.description }}</p>
+
+                <a href="{% url 'products' %}?category={{ category.id }}">
+                    View Products
+                </a>
+            </div>
+        {% empty %}
+            <p>No categories available.</p>
+        {% endfor %}
     </div>
 </div>
 

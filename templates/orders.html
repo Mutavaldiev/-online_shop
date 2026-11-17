@@ -1,46 +1,82 @@
+
 {% extends 'base.html' %}
+
 {% block content %}
 <div class="container orders-section">
     <h2 class="orders-title">My Orders</h2>
     <p class="orders-subtitle">Track and manage your orders</p>
+
+    {% if messages %}
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+
     <div class="orders-table-wrapper">
         <table class="orders-table">
             <thead>
                 <tr>
-                    <th>Order ID</th>
-                    <th>Date</th>
+                    <th>Product</th>
+                    <th>Customer</th>
+                    <th>Phone</th>
+                    <th>Quantity</th>
                     <th>Total Price</th>
                     <th>Status</th>
-                    <th>Action</th>
+                    <th>Date</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
+
             <tbody>
-                {% for order in orders %}
+                {% for item in orders %}
                 <tr>
-                    <td class="order-id"> #{{ order.id }} </td>
-                    <td>{{ order.created_at|date:"d M Y" }}</td>
-                    <td>{{ order.total_price }} TJS</td>
                     <td>
-                        {% if order.status == 'pending' %}
-                            <span class="order-status status-pending">Pending</span>
-                        {% elif order.status == 'completed' %}
-                            <span class="order-status status-completed">Completed</span>
-                        {% elif order.status == 'cancelled' %}
-                            <span class="order-status status-cancelled">Cancelled</span>
-                        {% else %}
-                            <span class="order-status status-processing">Processing</span>
+                        {% if item.product.photo %}
+                            <img
+                                src="{{ item.product.photo.url }}"
+                                alt="{{ item.product.name }}"
+                                width="60"
+                                height="60"
+                                style="object-fit: cover;"
+                            >
                         {% endif %}
+                        {{ item.product.name }}
                     </td>
 
+                    <td>{{ item.customer_name }}</td>
+                    <td>{{ item.phone_number }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.total_price }} TJS</td>
+                    <td>{{ item.get_status_display }}</td>
+                    <td>{{ item.created_at|date:"d M Y" }}</td>
+
+                    <td>
+                        <a href="{% url 'update_order' item.id %}">
+                            Update
+                        </a>
+
+                        <form
+                            method="POST"
+                            action="{% url 'delete_order' item.id %}"
+                            style="display: inline;"
+                        >
+                            {% csrf_token %}
+                            <button type="submit">
+                                Delete
+                            </button>
+                        </form>
+                    </td>
                 </tr>
+
                 {% empty %}
                 <tr>
-                    <td colspan="5" class="orders-empty">You have no orders yet.</td>
+                    <td colspan="8">
+                        You have no orders yet.
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 </div>
-
 {% endblock %}

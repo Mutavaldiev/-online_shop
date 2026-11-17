@@ -1,40 +1,39 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
-from decimal import Decimal
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
-from .models import *
-from .models import product, category
+from django.views.decorators.http import require_POST
 from django.db.models import Q
-from django.shortcuts import render
-
-
-
-# Create your views here.
-
+from .models import product as Product
+from .models import category as Category
+from .models import order as Order
 
 
 def registration(request):
     if request.method == 'POST':
         data = request.POST
-        if data:
-            User.objects.create_user(username = data['username'],password = data['password'])
-        else:
-            return redirect("registration")
-        return redirect("login")
+        User.objects.create_user(
+            username=data['username'],
+            password=data['password']
+        )
+        return redirect('login')
     return render(request, 'registration.html')
-    
-        
+
+
+
 
 def login_user(request):
     if request.method == 'POST':
         data = request.POST
-        user = authenticate(request, username = data['username'], password = data['password'])
+        user = authenticate(
+            request,
+            username=data['username'],
+            password=data['password']
+        )
         if user is not None:
             login(request, user)
-            return redirect("profile")
-        else:
-            return redirect("login")
+            return redirect('profile')
+        return redirect('login')
     return render(request, 'login.html')
 
 
@@ -44,7 +43,10 @@ def login_user(request):
 @login_required
 def logout_user(request):
     logout(request)
-    return redirect("login")
+    return redirect('login')
+
+
+
 
 
 
@@ -55,149 +57,176 @@ def profile(request):
 
 
 
-
-
-def create_order(request, pk):
-    product = get_object_or_404(product, pk=pk)
-    if request.method == "POST":
-        data = request.POST
-        order = order.objects.create(
-            customer_name = data['customer_name'],
-            count = data['count'],
-        )
-        product = product
-        product.stock -= int(data['count'])
-        product.save()
-        order.product_id.add(product)
-        return redirect('get_products')
-    
-    return render(request, 'add_orders.html', {"product": product})
-    
-
-
-    
-def get_products(request):
-    query = request.GET.get('q')
-    products=product.objects.all()
-    if query:
-        products=products.filter(
-            product_name__icontains = query
-        )
-    return render(request, 'show_products.html', {"products":products, 'query':query})
-
-
-
-def categories(request):
-    categories = category.objects.all()
-    return render(request, 'categories.html', {'categories': categories})
-
-
-
-
-
-def products(request):
-    products = product.objects.all()
-    categories = category.objects.all()
-
-    return render(request, 'products.html', {'products': products,'categories': categories})
-
-
-
-
-
-def orders(request):
-    orders = order.objects.all()
-    return render(request, 'orders.html', {'orders': orders})
-
-
-
-
-def add_category(request):
-    if request.method == 'POST':
-        category.objects.create(
-            category_name=request.POST.get('category_name')
-        )
-        return redirect('categories')
-    return render(request, 'add_category.html')
-
-
-
-
-
-def add_product(request):
-    if request.method == 'POST':
-        product.objects.create(
-            product_name=request.POST.get('product_name'),
-            category_id=category.objects.get(
-                id=request.POST.get('category_id')
-            ),
-            price=request.POST.get('price'),
-            photo=request.FILES.get('photo'),
-            stock=request.POST.get('stock')
-        )
-        return redirect('products')
-    return render(request, 'add_product.html', {'categories': category.objects.all()})
-
-
-
-
-
 def home(request):
     return render(request, 'home.html')
 
 
 
 
+
+def products(request):
+    search = request.GET.get('search', '').strip()
+    category_id = request.GET.get('category')
+    product_list = Product.objects.filter(is_active=True)
+    if search:
+        product_list = product_list.filter(
+            Q(name__icontains=search) |
+            Q(description__icontains=search)
+        )
+
+    if category_id:
+        product_list = product_list.filter(category_id=category_id)
+    return render(request, 'show_products.html', {
+        'products': product_list,
+        'search': search
+    })
+
+
+
+
+
+
+def show_categories(request):    
+    categories = Category.objects.filter(is_active=True)
+    return render(request, 'categories.html', {
+        'categories': categories
+    })
+
+
 def deals(request):
-    products = product.objects.filter(is_active=True)
-    return render(request, 'products.html', {'products': products})
+    product_list = Product.objects.filter(is_active=True)
+
+    return render(request, 'show_products.html', {
+        'products': product_list
+    })
+
+
 
 
 
 
 def wishlist(request):
-    return render(request, 'home.html') 
+    return render(request, 'home.html')
 
 
 
 
 
-def show_products(request):
-    search = request.GET.get('search', '').strip()
 
-    products = product.objects.filter(is_active=True)
+@login_required
+def create_order(request, pk):
+    selected_product = get_object_or_404(
+        Product,
+        pk=pk,
+        is_active=True
+    )
 
-    if search:
-        products = products.filter(
-            Q(name__icontains=search) |
-            Q(description__icontains=search)
+    if request.method == 'POST':
+        data = request.POST
+        quantity = int(data.get('quantity', 1))
+
+        Order.objects.create(
+            user=request.user,
+            product=selected_product,
+            customer_name=data.get('customer_name'),
+            phone_number=data.get('phone_number'),
+            quantity=quantity,
+            total_price=selected_product.price * quantity
         )
-    return render(request, 'show_products.html', {'products': products,'search': search,})
 
+        return redirect('orders')
 
-
-def show_categories(request):
-    search = request.GET.get('search', '').strip()
-    categories = category.objects.filter(is_active=True)
-
-    if search:
-        categories = categories.filter(
-            Q(name__icontains=search) |
-            Q(description__icontains=search)
-        )
-    return render(request, 'categories.html', {
-        'categories': categories,
-        'search': search,
-    })
-
-
-
-
-
-def get_order(request):
-    orders = order.objects.all()
     return render(request, 'get_order.html', {
-        'orders': orders
+        'product': selected_product
     })
 
 
+
+
+@login_required
+def orders(request):
+    user_orders = Order.objects.filter(
+        user=request.user,
+        is_active=True
+    ).select_related('product').order_by('-created_at')
+
+    return render(request, 'orders.html', {
+        'orders': user_orders
+    })
+
+
+@login_required
+def update_order(request, pk):
+    current_order = get_object_or_404(
+        Order,
+        pk=pk,
+        user=request.user,
+        is_active=True
+    )
+
+    if request.method == 'POST':
+        data = request.POST
+
+        current_order.customer_name = data.get('customer_name')
+        current_order.phone_number = data.get('phone_number')
+        current_order.quantity = int(data.get('quantity', 1))
+        current_order.total_price = (
+            current_order.product.price * current_order.quantity
+        )
+
+        current_order.save()
+
+        return redirect('orders')
+
+    return render(request, 'edit_order.html', {
+        'order': current_order
+    })
+
+
+@login_required
+@require_POST
+def delete_order(request, pk):
+    current_order = get_object_or_404(
+        Order,
+        pk=pk,
+        user=request.user,
+        is_active=True
+    )
+
+    current_order.is_active = False
+    current_order.save()
+
+    return redirect('orders')
+
+
+@login_required
+def add_category(request):
+    if request.method == 'POST':
+        Category.objects.create(
+            name=request.POST.get('name'),
+            description=request.POST.get('description')
+        )
+
+        return redirect('categories')
+
+    return render(request, 'add_category.html')
+
+
+@login_required
+def add_product(request):
+    if request.method == 'POST':
+        Product.objects.create(
+            name=request.POST.get('name'),
+            description=request.POST.get('description'),
+            category=Category.objects.get(
+                id=request.POST.get('category_id')
+            ),
+            price=request.POST.get('price'),
+            photo=request.FILES.get('photo')
+        )
+
+        return redirect('products')
+
+    return render(request, 'add_product.html', {
+        'categories': Category.objects.all()
+    })
