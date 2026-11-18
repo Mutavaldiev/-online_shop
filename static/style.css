@@ -87,7 +87,6 @@ body {
     color: #00bcd4;
 }
 
-/* LOGOUT */
 
 .navbar .logout-btn {
     background: #e63946;
@@ -101,14 +100,11 @@ body {
     color: white;
 }
 
-/* MAIN */
-
 .container {
     min-height: 65vh;
     padding: 35px 5%;
 }
 
-/* FOOTER */
 
 .footer {
     background: #101827;
@@ -150,31 +146,6 @@ body {
 }
 
 
-@media (max-width: 900px) {
-    .header {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .logo {
-        text-align: center;
-    }
-
-    .search-box {
-        width: 100%;
-    }
-
-    .search-box input {
-        flex: 1;
-        width: 0;
-    }
-
-    .navbar {
-        justify-content: center;
-    }
-}
-
-
 
 .profile-page {
     max-width: 850px;
@@ -196,7 +167,6 @@ body {
     color: #777;
 }
 
-/* PROFILE CARD */
 
 .profile-card {
     background: white;
@@ -409,26 +379,7 @@ body {
 }
 
 
-@media (max-width: 500px) {
-    .card {
-        margin: 35px 10px;
-        padding: 30px 20px;
-    }
 
-    .card h2 {
-        font-size: 24px;
-    }
-}
-
-
-
-
-
-
-
-
-
-/* Product Page */
 .product-section {
     padding: 40px 0;
     background: #f8f9fa;
@@ -513,22 +464,9 @@ body {
     margin-bottom: 25px;
 }
 
-@media (max-width: 576px) {
-    .product-title {
-        font-size: 25px;
-    }
-
-    .product-image {
-        height: 180px;
-    }
-}
 
 
 
-
-
-
-/* Categories Section */
 .categories-section {
     padding: 40px 0;
     background: #f8f9fa;
@@ -624,22 +562,8 @@ body {
     box-shadow: 0 0 5px rgba(13, 110, 253, 0.2);
 }
 
-@media (max-width: 576px) {
-    .categories-title {
-        font-size: 26px;
-    }
-
-    .category-image {
-        height: 160px;
-    }
-}
 
 
-
-
-
-
-/* Orders Section */
 .orders-section {
     padding: 40px 0;
     background: #f8f9fa;
@@ -748,22 +672,9 @@ body {
     color: #777;
 }
 
-@media (max-width: 576px) {
-    .orders-title {
-        font-size: 26px;
-    }
-
-    .orders-table-wrapper {
-        padding: 12px;
-    }
-}
 
 
 
-
-
-
-/* Show Products Page */
 .products-section {
     padding: 45px 0;
     background: #f8f9fa;
@@ -905,34 +816,6 @@ body {
     font-size: 18px;
 }
 
-@media (max-width: 576px) {
-    .products-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
-    }
-
-    .products-header h2 {
-        font-size: 26px;
-    }
-
-    .products-search {
-        flex-direction: column;
-    }
-
-    .products-search button {
-        width: 100%;
-    }
-
-    .products-grid {
-        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-        gap: 15px;
-    }
-
-    .product-card img {
-        height: 170px;
-    }
-}
 
 
 
